@@ -36,6 +36,8 @@ public class ChessMatch {
     private Piece makeMove(Position source, Position target){
         Piece p = board.romovePiece(source);
         Piece capturedPiece = board.romovePiece(target);
+        board.placePiece(p, target);
+        return capturedPiece;
     }
     
     private void validateSourcePostion(Position position){

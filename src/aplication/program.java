@@ -4,13 +4,14 @@ import boardgame.Board;
 import chess.ChessMatch;
 import chess.ChessPiece;
 import chess.ChessPosition;
+import static java.time.Clock.system;
 import java.util.Scanner;
 
 
 public class program {
     public static void main(String[]agrs){
        
-        Scanner sc = new Scanner(system.in);
+        Scanner sc = new Scanner(System.in);
         ChessMatch chessMatch = new ChessMatch();
        
        while(true){
@@ -26,6 +27,7 @@ public class program {
            
            ChessPiece captureChessPiece = chessMatch.performChessMove(source, target);
        }
+       
    }
     
 }

@@ -42,7 +42,10 @@ public class ChessMatch {
     
     private void validateSourcePostion(Position position){
         if(!board.thereIsAPiece(position)){
-            throw new ChessException("peca fpra de posição");
+            throw new ChessException("peca fora de posição");
+        }
+        if(!board.piece(position).isThereAnyPossibleMove()){
+              throw new ChessException("não existe movimentos possiveis para a peca");
         }
     }
     

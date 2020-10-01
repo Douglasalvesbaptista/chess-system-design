@@ -71,4 +71,8 @@ public class Board {
         }
        return piece(position) != null; 
    }
+
+    public Piece removePiece(Position source) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

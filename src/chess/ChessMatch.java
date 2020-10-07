@@ -60,13 +60,13 @@ public class ChessMatch {
 
     public ChessPiece[][] getPieces() {
         ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
-        for (int i = 0; i < board.getRows(); i++) {
-            for (int j = 0; j < board.getColumns(); j++) {
-                mat[i][j] = (ChessPiece) board.piece(i, j);
+            for (int i = 0; i < board.getRows(); i++) {
+                for (int j = 0; j < board.getColumns(); j++) {
+                    mat[i][j] = (ChessPiece) board.piece(i, j);
+                }
             }
+            return mat;
         }
-        return mat;
-    }
 
     public boolean[][] possibleMoves(ChessPosition sourcePosition) {
         Position position = sourcePosition.toPosition();
@@ -83,7 +83,7 @@ public class ChessMatch {
 
         if (testCheck(currentPlayer)) {
             undoMove(source, target, capturedPiece);
-            throw new ChessException("You can't put yourself in check");
+            throw new ChessException("Você não pode se colocar em cheque");
         }
 
         ChessPiece movedPiece = (ChessPiece) board.piece(target);
@@ -99,25 +99,25 @@ public class ChessMatch {
 
         check = (testCheck(opponent(currentPlayer))) ? true : false;
 
-        if (testCheckMate(opponent(currentPlayer))) {
-            checkMate = true;
-        } else {
-            nextTurn();
-        }
+            if (testCheckMate(opponent(currentPlayer))) {
+                checkMate = true;
+            } else {
+                nextTurn();
+            }
 
-        // #specialmove en passant
-        if (movedPiece instanceof Pawn && (target.getRow() == source.getRow() - 2 || target.getRow() == source.getRow() + 2)) {
-            enPassantVulnerable = movedPiece;
-        } else {
-            enPassantVulnerable = null;
-        }
+            // #specialmove en passant
+            if (movedPiece instanceof Pawn && (target.getRow() == source.getRow() - 2 || target.getRow() == source.getRow() + 2)) {
+                enPassantVulnerable = movedPiece;
+            } else {
+                enPassantVulnerable = null;
+            }
 
-        return (ChessPiece) capturedPiece;
+            return (ChessPiece) capturedPiece;
     }
 
     public ChessPiece replacePromotedPiece(String type) {
         if (promoted == null) {
-            throw new IllegalStateException("There is no piece to be promoted");
+            throw new IllegalStateException("Não há peça a ser promovida");
         }
         if (!type.equals("B") && !type.equals("N") && !type.equals("R") & !type.equals("Q")) {
             return promoted;
@@ -240,19 +240,19 @@ public class ChessMatch {
 
     private void validateSourcePosition(Position position) {
         if (!board.thereIsAPiece(position)) {
-            throw new ChessException("There is no piece on source position");
+            throw new ChessException("Não ha peca na origem");
         }
         if (currentPlayer != ((ChessPiece) board.piece(position)).getColor()) {
-            throw new ChessException("The chosen piece is not yours");
+            throw new ChessException("A peça escolhida não é sua");
         }
         if (!board.piece(position).isThereAnyPossibleMove()) {
-            throw new ChessException("There is no possible moves for the chosen piece");
+            throw new ChessException("Não há movimentos possíveis para a peça escolhida");
         }
     }
 
     private void validateTargetPosition(Position source, Position target) {
         if (!board.piece(source).possibleMove(target)) {
-            throw new ChessException("The chosen piece can't move to target position");
+            throw new ChessException("A peça escolhida não pode se mover para a posição alvo");
         }
     }
 
@@ -267,25 +267,25 @@ public class ChessMatch {
 
     private ChessPiece king(Color color) {
         List<Piece> list = piecesOnTheBoard.stream().filter(x -> ((ChessPiece) x).getColor() == color).collect(Collectors.toList());
-        for (Piece p : list) {
-            if (p instanceof King) {
-                return (ChessPiece) p;
+            for (Piece p : list) {
+                if (p instanceof King) {
+                    return (ChessPiece) p;
+                }
             }
+            throw new IllegalStateException("Não há " + color + " rei no tabuleiro");
         }
-        throw new IllegalStateException("There is no " + color + " king on the board");
-    }
 
     private boolean testCheck(Color color) {
         Position kingPosition = king(color).getChessPosition().toPosition();
-        List<Piece> opponentPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPiece) x).getColor() == opponent(color)).collect(Collectors.toList());
-        for (Piece p : opponentPieces) {
-            boolean[][] mat = p.possibleMoves();
-            if (mat[kingPosition.getRow()][kingPosition.getColumn()]) {
-                return true;
+            List<Piece> opponentPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPiece) x).getColor() == opponent(color)).collect(Collectors.toList());
+            for (Piece p : opponentPieces) {
+                boolean[][] mat = p.possibleMoves();
+                if (mat[kingPosition.getRow()][kingPosition.getColumn()]) {
+                    return true;
+                }
             }
+            return false;
         }
-        return false;
-    }
 
     private boolean testCheckMate(Color color) {
         if (!testCheck(color)) {
@@ -294,23 +294,23 @@ public class ChessMatch {
         List<Piece> list = piecesOnTheBoard.stream().filter(x -> ((ChessPiece) x).getColor() == color).collect(Collectors.toList());
         for (Piece p : list) {
             boolean[][] mat = p.possibleMoves();
-            for (int i = 0; i < board.getRows(); i++) {
-                for (int j = 0; j < board.getColumns(); j++) {
-                    if (mat[i][j]) {
-                        Position source = ((ChessPiece) p).getChessPosition().toPosition();
-                        Position target = new Position(i, j);
-                        Piece capturedPiece = makeMove(source, target);
-                        boolean testCheck = testCheck(color);
-                        undoMove(source, target, capturedPiece);
-                        if (!testCheck) {
-                            return false;
+                for (int i = 0; i < board.getRows(); i++) {
+                    for (int j = 0; j < board.getColumns(); j++) {
+                        if (mat[i][j]) {
+                            Position source = ((ChessPiece) p).getChessPosition().toPosition();
+                            Position target = new Position(i, j);
+                            Piece capturedPiece = makeMove(source, target);
+                            boolean testCheck = testCheck(color);
+                            undoMove(source, target, capturedPiece);
+                            if (!testCheck) {
+                                return false;
+                            }
                         }
                     }
                 }
             }
+            return true;
         }
-        return true;
-    }
 
     private void placeNewPiece(char column, int row, ChessPiece piece) {
         board.placePiece(piece, new ChessPosition(column, row).toPosition());
